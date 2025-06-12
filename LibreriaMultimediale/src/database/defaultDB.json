@@ -1,0 +1,58 @@
+[
+    {
+        "description": "Bohemian Rhapsody è un singolo del gruppo musicale britannico Queen, pubblicato il 31 ottobre 1975 come primo estratto dal quarto album in studio A Night at the Opera.",
+        "durata": 540,
+        "id": 0,
+        "singer": "Queen",
+        "title": "Bohemian Rapsody",
+        "type": "Music",
+        "year": 1975
+    },
+    {
+        "description": "Vita paranoia è un singolo del cantautore italiano Gazzelle, pubblicato il 17 gennaio 2020 estratto dall'album Post Punk.",
+        "durata": 194,
+        "id": 1,
+        "singer": "Gazzelle",
+        "title": "Vita Paranoia",
+        "type": "Music",
+        "year": 2020
+    },
+    {
+        "description": "Ventidue anni dopo l'incidente al Jurassic Park, il sogno di John Hammond è diventato realtà. Isla Nublar dispone finalmente di un parco a tema completamente funzionante con migliaia di ingressi al giorno: il Jurassic World, fondato dalla InGen con l'appoggio del magnate Simon Masrani, proprietario della Masrani Global, che ha ricevuto l'incarico di portare avanti il progetto da Hammond stesso, poco prima della sua morte.",
+        "durata": 7680,
+        "genre": "Fantascienza",
+        "id": 2,
+        "title": "Jurassic World",
+        "type": "Film",
+        "year": 2015
+    },
+    {
+        "description": "Sesto capitolo della saga incentrata sulle vicende dell'impiegato Ugo Fantozzi, ideato ed interpretato da Villaggio, si distingue dai precedenti soprattutto per l'ambientazione di fondo: le avventure del ragioniere non si svolgono più in larga parte sul luogo di lavoro, dato che egli ha ormai raggiunto l'età pensionabile.",
+        "durata": 6120,
+        "genre": "Commedia",
+        "id": 3,
+        "title": "Fantozzi va in pensione",
+        "type": "Film",
+        "year": 1988
+    },
+    {
+        "author": "George Orwell",
+        "description": "Il più celebre romanzo di George Orwell ed è stato scritto nel 1948. Una guerra devastante ha suddiviso il pianeta in tre super-potenze, in lotta fra loro e governate da regimi totalitari: Oceania, Eurasia ed Estasia. È nella prima che Winston vive e lavora da uomo qualunque. Nell'animo, però, sembra l'unico a rifiutare la società voluta dal Partito e la filosofia imposta, che non permette tanto l'amore quanto il libero pensiero. La sua ribellione è interiore, ma col tempo si concretizza in azioni sempre più pericolose.",
+        "genre": "Romanzo",
+        "id": 4,
+        "pages": 320,
+        "title": "1984",
+        "type": "Book",
+        "year": 1948
+    },
+    {
+        "author": "George Orwell",
+        "description": "La fattoria degli animali (Animal Farm) è un romanzo teriomorfo di George Orwell pubblicato per la prima volta il 17 agosto 1945. Secondo Orwell, il libro riflette sugli eventi che portarono alla Rivoluzione russa e successivamente all'era staliniana dell'Unione Sovietica.",
+        "genre": "Romanzo",
+        "id": 5,
+        "pages": 200,
+        "title": "La fattoria degli animali",
+        "type": "Book",
+        "year": 1945
+    }
+]

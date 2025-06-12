@@ -1,0 +1,310 @@
+MainWidget{
+    background-color: white;
+
+}
+
+QWidget#comboBoxContainer{
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    padding: 50px;
+}
+
+QLabel{
+    color: black;
+}
+
+#createdWidget{
+    border: 1px solid lightgray;
+    padding: 2px;
+    border-radius: 15px;
+}
+
+#createdWidget::hover{
+    border-color: orange;
+}
+
+#filtersButtons{
+    border-radius: 6px;
+    background-color: white;
+    border: 1px solid lightgray;
+    width: 12px;
+    height: 12px;
+    margin: 0px 5px;
+}
+
+#filtersButtons:checked{
+    background-color: gray;
+    border-radius: 6px;
+    width: 12px;
+    height: 12px;
+}
+
+QDialog{
+    color: black;
+    background-color: white;
+}
+
+QComboBox
+{
+    background-color: white;
+    padding-left: 6px;
+    color: black;
+    height: 30px;
+	border-radius: 5px;
+    border: 1px solid lightgray;
+}
+
+
+QComboBox::disabled
+{
+	background-color: white;
+	color: black;
+	border-color: lightgray;
+}
+
+
+QComboBox:on
+{
+    background-color: white;
+	color: black;
+    border-color: lightgray;
+}
+
+
+QComboBox QAbstractItemView
+{
+    background-color: white;
+    color: black;
+    selection-background-color: green;
+	selection-color: white;
+    outline: 0;
+    border-color: lightgray;
+}
+
+
+QComboBox::drop-down
+{
+	background-color: white;
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+	border-radius: 2px;
+    width: 15px;
+    border-color: lightgray;
+}
+
+
+QComboBox::down-arrow
+{
+    image: url(:/assets/arrowDown.png);
+    width: 15px;
+    height: 30px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+QComboBox::down-arrow:hover
+{
+	background-color: #585858;
+}
+
+QSpinBox
+{
+    height: 30px;
+	background-color: white;
+	color : black;
+	border: 1px solid lightgray;
+	border-radius: 5px;
+	padding: 3px;
+	padding-left: 5px;
+}
+
+
+QSpinBox::up-button
+{
+	background-color: white;
+    width: 15px;
+	border-top-right-radius: 4px;
+    border-width: 1px;
+	border-color: lightgray;
+}
+
+
+QSpinBox::up-button:hover
+{
+	background-color: #585858;
+
+}
+
+
+QSpinBox::up-button:pressed
+{
+	background-color: #252525;
+    width: 15px;
+    border-width: 1px;
+}
+
+
+QSpinBox::up-arrow
+{
+    image: url(:/assets/arrowUp.png);
+    width: 15px;
+    width: 15px;
+}
+
+
+QSpinBox::down-button
+{
+	background-color: white;
+    width: 16px;
+    border-width: 1px;
+	border-bottom-right-radius: 4px;
+	border-color: lightgray;
+
+}
+
+
+QSpinBox::down-button:hover
+{
+	background-color: #585858;
+}
+
+
+QSpinBox::down-button:pressed
+{
+	background-color: #252525;
+    width: 15px;
+    border-width: 1px;
+}
+
+
+QSpinBox::down-arrow
+{
+    image: url(:/assets/arrowDown.png);
+    width: 15px;
+    height: 15px;
+}
+
+QLineEdit#searchBar{
+    background-color: white;
+    color: black;
+    border: 0.5px solid lightgrey;
+    border-radius: 17px;
+    height: 34px;
+    background: qlineargradient(
+            x1: 0, y1: 0, x2: 0, y2: 1,
+            stop: 0 rgba(90, 90, 90, 0.15),
+            stop: 0.05 #ffffff,
+            stop: 0.95 #ffffff,
+            stop: 1 rgba(97, 97, 97, 0.15)
+    );
+}
+
+QLineEdit#formField{
+    background-color: white;
+    color: black;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
+
+QPushButton{
+    color: gray;
+    border: none;
+    background-color: white;
+    font-size: 11px;
+}
+
+QPushButton#closeButton{
+    border: 1px solid lightgray;
+    border: none;
+}
+
+QPushButton#confirmSelection,#saveChanges{
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 15px;
+    border: 1px solid lightgray;
+    width: 90px;
+}
+
+QPushButton#saveFileBtn,#UploadFileBtn,#createFileBtn{
+    padding: 8px;
+    width: 30px;
+    border-radius: 15px;
+    border: 1px solid lightgray;
+    font-weight: bold;
+}
+
+QPushButton#changePageBtn{
+    padding: 8px;
+    width: 60px;
+    border-radius: 15px;
+    border: 1px solid lightgray;
+    font-weight: bold;
+}
+
+QPushButton::hover#saveFileBtn,::hover#changePageBtn,::hover#confirmSelection,::hover#saveChanges,::hover#createFileBtn{
+    color: green;
+    border-color: green;
+    border: 1px solid lightgray;
+}
+
+QPushButton::hover#UploadFileBtn{
+    color: orange;
+    border-color: orange;
+    border: 1px solid lightgray;
+}
+
+QScrollArea{
+    background-color: white;
+    border: none;
+}
+
+QTextEdit {
+    padding-top: 0px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    background-color: white;
+    color: black;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background-color: white;
+    border-radius: 5px;
+    width: 15px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: lightgray;
+    border-radius: 5px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background-color: white;
+    border-radius: 5px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    background: transparent;
+    border-radius: 5px;
+}
+
+#form{
+    border: 1px solid lightgray;
+    border-radius: 20px;
+}
+
+#bookLabelsOverview{
+    color: rgba(244, 134, 106, 1);
+}
+
+#musicLabelsOverview{
+    color: rgba(85, 180, 172, 1);
+}
+
+#filmLabelsOverview{
+    color: rgba(255, 167, 32, 1);
+}

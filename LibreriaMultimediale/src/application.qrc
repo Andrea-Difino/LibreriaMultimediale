@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/imgMusic.png</file>
+        <file>assets/imgMusicBig.png</file>
+        <file>assets/imgBook.png</file>
+        <file>assets/imgBookBig.png</file>
+        <file>assets/imgFilm.png</file>
+        <file>assets/imgFilmBig.png</file>
+        <file>assets/guarda.png</file>
+        <file>assets/modifica.png</file>
+        <file>assets/delete.png</file>
+        <file>assets/search.png</file>
+        <file>assets/save.png</file>
+        <file>assets/upload.png</file>
+        <file>assets/createFile.png</file>
+        <file>assets/arrowDown.png</file>
+        <file>assets/arrowUp.png</file>
+        <file>font/mainFont.ttf</file>
+        <file>style.qss</file>
+    </qresource>
+</RCC>
