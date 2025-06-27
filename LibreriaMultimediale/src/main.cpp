@@ -5,7 +5,8 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-
+    a.setApplicationName("Libreria Multimediale");
+    a.setApplicationDisplayName("Libreria Multimediale");
     int id = QFontDatabase::addApplicationFont(":/font/mainFont.ttf");
     if (id != -1) {
         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
