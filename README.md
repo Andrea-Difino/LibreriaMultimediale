@@ -21,6 +21,10 @@ L’impiego di diverse tipologie di media ha rappresentato inoltre un’ottima o
 <hr/>
 
 ## Istruzioni
+
+### Linux 
+
+#### 1.0 Clonare la libreria
 Per compilare LibreriaMultimediale, clonare o scaricare questo repository, digita `qmake` e poi `make`:
 
 ```bash
@@ -37,3 +41,18 @@ Per eseguire l'applicazione, digita:
 ```bash
 ./LibreriaMultimediale
 ```
+
+#### 1.1 Scaricare il file AppImage
+Scaricare il file .AppImage della release 
+
+```bash
+ chmod +x LibreriaMultimediale-x86_64_Linux.AppImage
+ ./LibreriaMultimediale-x86_64_Linux.AppImage
+```
+
+### Windows
+
+#### 1.0 Scaricare la cartella zip della release
+1. Scaricare la cartella zip della release, 
+2. Estrarre il contenuto in una posizione a piacere
+3. Eseguire normalmente il file .exe dentro la cartella
