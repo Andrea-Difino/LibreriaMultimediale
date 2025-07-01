@@ -6,7 +6,7 @@ Libreria Multimediale è un gestionale che consente di aggiungere, modificare, c
 
 <br/>
 
-L'applicazione è dotata di un'interfaccia grafica moderna, progettata per essere \textbf{user-friendly}. Sono stati utilizzati contrasti visivi elevati per mettere in risalto sia i media che le principali funzionalità, come la cancellazione, la modifica e la visualizzazione dei contenuti.
+L'applicazione è dotata di un'interfaccia grafica moderna, progettata per essere **user-friendly**. Sono stati utilizzati contrasti visivi elevati per mettere in risalto sia i media che le principali funzionalità, come la cancellazione, la modifica e la visualizzazione dei contenuti.
 
 Il motore di ricerca si basa su un algoritmo semplice, che utilizza il nome del media come chiave di ricerca. Per migliorarne l’efficacia, è stato integrato un sistema basilare di filtraggio che consente di selezionare gli elementi in base alla tipologia desiderata (libro, film o musica).
 
