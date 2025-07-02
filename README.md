@@ -42,14 +42,6 @@ Per eseguire l'applicazione, digita:
 ./LibreriaMultimediale
 ```
 
-#### 1.1 Scaricare il file AppImage
-Scaricare il file .AppImage della release 
-
-```bash
- chmod +x LibreriaMultimediale-x86_64_Linux.AppImage
- ./LibreriaMultimediale-x86_64_Linux.AppImage
-```
-
 ### Windows
 
 #### 1.0 Scaricare la cartella zip della release
