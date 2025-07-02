@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QFileDialog>
+#include <QShortcut>
 
 TopBar::TopBar(QWidget *parent) : QWidget(parent){
 
@@ -17,6 +18,9 @@ TopBar::TopBar(QWidget *parent) : QWidget(parent){
     QIcon saveIcon(":/assets/save.png");
     saveFile->setIcon(saveIcon);
     saveFile->setObjectName("saveFileBtn");
+    
+    QShortcut* saveShortcut = new QShortcut(QKeySequence("Ctrl+S"), this);
+    connect(saveShortcut, &QShortcut::activated, dynamic_cast<MainWidget*>(this->parent()), &MainWidget::handleSave);
 
     connect(saveFile, &QPushButton::clicked, dynamic_cast<MainWidget*>(this->parent()), &MainWidget::handleSave);
 
@@ -25,6 +29,9 @@ TopBar::TopBar(QWidget *parent) : QWidget(parent){
     QIcon uploadIcon(":/assets/upload.png");
     uploadFile->setIcon(uploadIcon);
     uploadFile->setObjectName("UploadFileBtn");
+    
+    QShortcut* uploadShortcut = new QShortcut(QKeySequence("Ctrl+O"), this);
+    connect(uploadShortcut, &QShortcut::activated, dynamic_cast<MainWidget*>(this->parent()), &MainWidget::loadJSONFile);
 
     connect(uploadFile, &QPushButton::clicked,dynamic_cast<MainWidget*>(this->parent()), &MainWidget::loadJSONFile);
 
@@ -33,6 +40,9 @@ TopBar::TopBar(QWidget *parent) : QWidget(parent){
     QIcon createFileIcon(":/assets/createFile.png");
     createFile->setIcon(createFileIcon);
     createFile->setObjectName("createFileBtn");
+    
+    QShortcut* createShortcut = new QShortcut(QKeySequence("Ctrl+N"), this);
+    connect(createShortcut, &QShortcut::activated, dynamic_cast<MainWidget*>(this->parent()), &MainWidget::createJSONFile);
 
     connect(createFile, &QPushButton::clicked,dynamic_cast<MainWidget*>(this->parent()), &MainWidget::createJSONFile);
 
@@ -50,6 +60,7 @@ TopBar::TopBar(QWidget *parent) : QWidget(parent){
 
     searchBar = new SearchWidget(this);
     layout->addWidget(searchBar,1,Qt::AlignHCenter);
+    
     connect(this, &TopBar::isSearching, dynamic_cast<MainWidget*>(parent), &MainWidget::filterLibraryByRegex);
 
     layout->addStretch();
@@ -60,7 +71,7 @@ QPushButton * TopBar::getChangePageBtn() const {
     return changePageBtn;
 }
 
-QWidget * TopBar::getSearchWidget() const {
+SearchWidget * TopBar::getSearchWidget() const {
     return searchBar;
 }
 

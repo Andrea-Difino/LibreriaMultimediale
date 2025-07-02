@@ -10,7 +10,7 @@
 
 class Item {
 public:
-    explicit Item(const std::string& titolo, unsigned int year,const std::string& des);
+    explicit Item(const std::string& titolo, unsigned int year,const std::string& des, const std::string& img_path);
     virtual ~Item() = default;
 
     std::string getTitle() const;
@@ -18,14 +18,18 @@ public:
     unsigned int getYear() const;
     unsigned int getId() const;
     static unsigned int getIdCount();
-    static void setIdCount(unsigned v);
     bool getStatus() const;
+    std::string getImagePath() const;
+    bool isLiked() const;
 
     void setTitle(std::string t);
     void setDescription(std::string d);
     void setYear(unsigned int y);
     void setId(unsigned int id);
     void setStatus(bool status);
+    static void setIdCount(unsigned v);
+    void setImagePath(std::string path);
+    void setLiked(bool l);
 
     virtual void displayInfo() const = 0;
 
@@ -37,6 +41,8 @@ private:
     unsigned int id;
     static unsigned int idCount;
     bool isSaved = false;
+    std::string image_path;
+    bool is_liked = false;
 };
 
 

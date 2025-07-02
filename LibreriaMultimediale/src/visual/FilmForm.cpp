@@ -6,9 +6,13 @@
 
 #include "FormWidget.h"
 #include <QDate>
+#include <qdir.h>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QStandardPaths>
+#include "ImageHandler.h"
+
 #include "ItemCard.h"
 #include "../logic/Film.h"
 
@@ -33,7 +37,7 @@ FilmForm::FilmForm(QWidget* parent) : FormWidget(parent) {
     year->setMargin(10);
     yearSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     yearSpinBox->setRange(1890, QDate::currentDate().year());
-    yearSpinBox->setValue(1890);
+    yearSpinBox->setValue(QDate::currentDate().year());
     yearLayout->addWidget(year);
     yearLayout->addWidget(yearSpinBox);
 
@@ -89,28 +93,47 @@ FilmForm::FilmForm(QWidget* parent) : FormWidget(parent) {
     descriptionLayout->addWidget(description);
     descriptionLayout->addWidget(descriptionField);
 
+    addImgButton = new QPushButton("Aggiungi Immagine", this);
+    addImgButton->setCursor(Qt::PointingHandCursor);
+    addImgButton->setObjectName("addImagesButton");
+
+    ImageHandler* imageHand = new ImageHandler(this);
+    connect(addImgButton, &QPushButton::clicked, this, [this,imageHand] () {
+        image_path = imageHand->addImage();
+        addImgButton->setText("Immagine Selezionata!");
+    });
+
     createItem = new QPushButton("Crea Media", this);
     createItem->setObjectName("confirmSelection");
     createItem->setCursor(Qt::PointingHandCursor);
-    createItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(addImgButton);
+    buttonsLayout->addWidget(createItem);
+    buttonsLayout->setAlignment(Qt::AlignHCenter);
 
     form->getLayout()->addLayout(titleLayout);
     form->getLayout()->addLayout(yearLayout);
     form->getLayout()->addLayout(timeLayout);
     form->getLayout()->addLayout(genreLayout);
     form->getLayout()->addLayout(descriptionLayout);
-    form->getLayout()->addWidget(createItem,0,Qt::AlignHCenter);
+    form->getLayout()->addLayout(buttonsLayout);
 
     connect(createItem, &QPushButton::clicked, [=] {
         if (titleField->text().isEmpty()) {
-            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione, devono essere obbligatoriamente compilati.");
+            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione e l'immagine, sono obbligatori.");
             return;
         }
         if (secondsSpinBox->value() == 0 && minutesSpinBox->value() == 0 && hoursSpinBox->value() == 0) {
             QMessageBox::warning(this, "Errore", "La durata deve essere maggiore di zero");
             return;
         }
-        Film* newFilm = new Film(titleField->text().trimmed().toStdString(),descriptionField->toPlainText().toStdString(),genreComboBox->currentText().toStdString(),yearSpinBox->value(),(secondsSpinBox->value() + minutesSpinBox->value() * 60 + hoursSpinBox->value() * 3600)%86400);
+        QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+        QString copiedPath = ImageHandler::copyImageToDestination(image_path, destFolder);
+        if (!copiedPath.isEmpty()) {
+            addImgButton->setText("Aggiungi Immagine");
+        }
+        Film* newFilm = new Film(titleField->text().trimmed().toStdString(),descriptionField->toPlainText().toStdString(),genreComboBox->currentText().toStdString(),yearSpinBox->value(),(secondsSpinBox->value() + minutesSpinBox->value() * 60 + hoursSpinBox->value() * 3600)%86400, copiedPath.toStdString());
         form->getMainWidget()->getLibrary()->addItem(newFilm);
         form->getMainWidget()->getLibrary()->setStatus(false);
         ItemCard* newItem = new ItemCard(titleField->text(),":/assets/imgFilm.png",newFilm, form->getMainWidget());
@@ -128,4 +151,5 @@ void FilmForm::clearFields() {
     minutesSpinBox->clear();
     secondsSpinBox->clear();
     descriptionField->clear();
+    image_path = "";
 }

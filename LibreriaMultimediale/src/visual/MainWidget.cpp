@@ -33,47 +33,38 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent){
     topBar->setMaximumHeight(100);
     topBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+   
     filtersWidget = new QWidget(this);
-    filtersWidget->setMinimumHeight(30);
-    filtersWidget->setContentsMargins(20,0,0,0);
+    filtersWidget->setMinimumHeight(50);
+    filtersWidget->setContentsMargins(20, 0, 20, 0);
 
     QHBoxLayout *filtersLayout = new QHBoxLayout();
-    filtersLayout->setAlignment(Qt::AlignHCenter);
-    QLabel* music_label = new QLabel("Musica");
-    QPushButton* selectMusic = new QPushButton();
-    selectMusic->setCheckable(true);
-    selectMusic->setCursor(QCursor(Qt::PointingHandCursor));
-    selectMusic->setObjectName("filtersButtons");
-    filtersLayout->addWidget(music_label);
-    filtersLayout->addWidget(selectMusic);
+    filtersLayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    filtersLayout->setSpacing(15);
+	
+    QLabel* typeLabel = new QLabel("Filtra per tipo:");
+    QComboBox* typeCombo = new QComboBox();
+    typeCombo->addItem("Tutti", QVariant(-1)); 
+    typeCombo->addItem("Libri", QVariant(0));  
+    typeCombo->addItem("Musica", QVariant(1)); 
+    typeCombo->addItem("Film", QVariant(2));
+    typeCombo->setCurrentIndex(0);
 
-    QLabel* film_label = new QLabel("Film");
-    QPushButton* selectFilm = new QPushButton();
-    selectFilm->setCheckable(true);
-    selectFilm->setCursor(QCursor(Qt::PointingHandCursor));
-    selectFilm->setObjectName("filtersButtons");
-    filtersLayout->addWidget(film_label);
-    filtersLayout->addWidget(selectFilm);
+    QLabel* favLabel = new QLabel("Solo preferiti:"); 
+    QCheckBox* favCheckbox = new QCheckBox(); 
+    favCheckbox->setCursor(QCursor(Qt::PointingHandCursor));
 
-    QLabel* book_label = new QLabel("Libri");
-    QPushButton* selectBook = new QPushButton();
-    selectBook->setCheckable(true);
-    selectBook->setCursor(QCursor(Qt::PointingHandCursor));
-    selectBook->setObjectName("filtersButtons");
-    filtersLayout->addWidget(book_label);
-    filtersLayout->addWidget(selectBook);
+    filtersLayout->addWidget(typeLabel);
+    filtersLayout->addWidget(typeCombo);
+    filtersLayout->addSpacing(15);
+    filtersLayout->addWidget(favLabel);
+    filtersLayout->addWidget(favCheckbox);
+    filtersLayout->addStretch(); 
 
     filtersWidget->setLayout(filtersLayout);
 
-    connect(selectMusic, &QPushButton::clicked, [=] {
-        filterItemsByType(selectBook,selectFilm,selectMusic);
-    });
-    connect(selectBook, &QPushButton::clicked, [=] {
-        filterItemsByType(selectBook,selectFilm,selectMusic);
-    });
-    connect(selectFilm, &QPushButton::clicked, [=] {
-        filterItemsByType(selectBook,selectFilm,selectMusic);
-    });
+    connect(typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](){ filterItems(typeCombo, favCheckbox); });
+    connect(favCheckbox, &QCheckBox::stateChanged,[=](){ filterItems(typeCombo, favCheckbox); });
 
     pagesStack = new QStackedWidget(this);
     pagesStack->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -84,6 +75,8 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent){
     connect(modify_widget_visitor_, &ModifyWidgetVisitor::modifyWidgetCreated, this, &MainWidget::addModifyToModifyPage);
     connect(modify_widget_visitor_, &ModifyWidgetVisitor::closeModifyWidget, this, &MainWidget::changePage);
     connect(modify_widget_visitor_, &ModifyWidgetVisitor::saveChanges, this, &MainWidget::changeItemCard);
+    
+    connect(this, &MainWidget::itemStatusChanged, this, &MainWidget::handleItemStatusChange);
 
     homePage = new QWidget(pagesStack);
     QWidget* homePageContainer = new QWidget(homePage);
@@ -353,25 +346,28 @@ void MainWidget::changeItemCard(unsigned int id, QString title) {
     }
     library->setStatus(false);
     jsonVisitor->removeItemById(id); //mi serve per evitare duplicati nel DB.
+    handleSave();
 }
 
-void MainWidget::filterItemsByType(QPushButton* selectBook, QPushButton* selectFilm, QPushButton* selectMusic) {
-    bool showBooks = selectBook->isChecked();
-    bool showFilms = selectFilm->isChecked();
-    bool showMusic = selectMusic->isChecked();
+void MainWidget::filterItems(QComboBox* typeCombo, QCheckBox* favCheckbox) {
+    topBar->getSearchWidget()->getSearchBar()->clear();
+    for (auto item : item_cards_) {
+    	item->show();
+    }
+    int filterType = typeCombo->currentData().toInt();
+    bool onlyFavorites = favCheckbox->isChecked();
 
     for (auto item : item_cards_) {
         auto* itemPtr = item->getItem();
-        bool isBook = dynamic_cast<Book*>(itemPtr) != nullptr;
-        bool isFilm = dynamic_cast<Film*>(itemPtr) != nullptr;
-        bool isMusic = dynamic_cast<Music*>(itemPtr) != nullptr;
+        
+        bool typeMatch = (filterType == -1) || 
+                        (filterType == 0 && dynamic_cast<Book*>(itemPtr)) ||
+                        (filterType == 1 && dynamic_cast<Music*>(itemPtr)) ||
+                        (filterType == 2 && dynamic_cast<Film*>(itemPtr));
+        
+        bool favoriteMatch = !onlyFavorites || itemPtr->isLiked();
 
-        bool shouldShow = (!showBooks && !showFilms && !showMusic) ||
-                          (showBooks && isBook) ||
-                          (showFilms && isFilm) ||
-                          (showMusic && isMusic);
-
-        item->setVisible(shouldShow);
+        item->setVisible(typeMatch && favoriteMatch);
     }
     flowLayout->update();
 }
@@ -435,6 +431,14 @@ void MainWidget::deleteItem(QWidget* widget) {
                 if (item && item->widget()) {
                     ItemCard* card = dynamic_cast<ItemCard*>(item->widget());
                     if (card && card->getItem()->getId() == itemToRemove->getItem()->getId()) {
+                        QString imagePath = QString::fromStdString(card->getItem()->getImagePath());
+                        if (!imagePath.isEmpty()) {
+                            if (QFile::exists(imagePath)) {
+                                if (!QFile::remove(imagePath)) {
+                                    qWarning() << "Non è stato possibile rimuovere l'immagine:" << imagePath;
+                                }
+                            }
+                        }
                         library->removeItemById(card->getItem()->getId()); //rimuovo l'item dalla libreria
                         flowLayout->removeItem(item);
                         jsonVisitor->removeItemById(card->getItem()->getId()); //rimuovo l'item dal JsonArray
@@ -464,6 +468,19 @@ void MainWidget::closeEvent(QCloseEvent *event) {
             saveFile();
             event->accept();
         } else if (risposta == QMessageBox::Discard) {
+            for (const auto& item : library->getVector()) {
+                if (!item->getStatus()) {
+                    QString imagePath = QString::fromStdString(item->getImagePath());
+                    if (!imagePath.isEmpty()) {
+                        QFile file(imagePath);
+                        if (file.exists()) {
+                            if (!file.remove()) {
+                                qWarning() << "Impossibile rimuovere immagine:" << imagePath;
+                            }
+                        }
+                    }
+                }
+            }
             event->accept();
         } else {
             event->ignore();
@@ -498,9 +515,22 @@ Library * MainWidget::getLibrary() const {
     return library;
 }
 
+void MainWidget::handleItemStatusChange(unsigned int id) {
+    library->setStatus(false);
+    jsonVisitor->removeItemById(id);
+    checkFileExist();
+    library->applyVisitor(jsonVisitor);
+    jsonVisitor->saveToFile();
+    library->setStatus(true);
+}
+
 void MainWidget::addW_notification(QWidget* widget) {
     addWidgetToUI(widget);
-    item_cards_.push_back(dynamic_cast<ItemCard*>(widget));
+    ItemCard* itemCard = dynamic_cast<ItemCard*>(widget);
+    if (itemCard) {
+        item_cards_.push_back(itemCard);
+        connect(itemCard, &ItemCard::userDoubleClicked, this, &MainWidget::itemStatusChanged);
+    }
     flowLayout->setGeometry(flowLayout->geometry());
 }
 

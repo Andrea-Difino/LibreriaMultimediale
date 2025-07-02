@@ -26,7 +26,6 @@ private:
     MainWidget *main_wid;
     QVBoxLayout* mainLayout;
     FormWidget *currentForm;
-    QPushButton* createItem;
 };
 
 

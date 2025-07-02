@@ -4,9 +4,12 @@
 
 #include "BookForm.h"
 
+#include <qdir.h>
+
 #include "FormWidget.h"
 #include <QMessageBox>
 #include "Form.h"
+#include "ImageHandler.h"
 #include "../logic/Book.h"
 
 BookForm::BookForm(QWidget* parent) : FormWidget(parent) {
@@ -29,8 +32,7 @@ BookForm::BookForm(QWidget* parent) : FormWidget(parent) {
     year->setFixedWidth(120);
     year->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     year->setMargin(10);
-    yearSpinBox->setRange(1, QDate::currentDate().year());
-    yearSpinBox->setValue(1);
+    yearSpinBox->setRange(0, QDate::currentDate().year());
     yearLayout->addWidget(year);
     yearLayout->addWidget(yearSpinBox);
 
@@ -86,9 +88,24 @@ BookForm::BookForm(QWidget* parent) : FormWidget(parent) {
     descriptionLayout->addWidget(description);
     descriptionLayout->addWidget(descriptionField);
 
+    addImgButton = new QPushButton("Aggiungi Immagine", this);
+    addImgButton->setCursor(Qt::PointingHandCursor);
+    addImgButton->setObjectName("addImagesButton");
+
+    ImageHandler* imageHand = new ImageHandler(this);
+    connect(addImgButton, &QPushButton::clicked, this, [this,imageHand] () {
+        image_path = imageHand->addImage();
+        addImgButton->setText("Immagine Selezionata!");
+    });
+
     createItem = new QPushButton("Crea Media", this);
     createItem->setObjectName("confirmSelection");
     createItem->setCursor(Qt::PointingHandCursor);
+
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(addImgButton);
+    buttonsLayout->addWidget(createItem);
+    buttonsLayout->setAlignment(Qt::AlignHCenter);
 
     form->getLayout()->addLayout(titleLayout);
     form->getLayout()->addLayout(yearLayout);
@@ -96,14 +113,19 @@ BookForm::BookForm(QWidget* parent) : FormWidget(parent) {
     form->getLayout()->addLayout(authorLayout);
     form->getLayout()->addLayout(genreLayout);
     form->getLayout()->addLayout(descriptionLayout);
-    form->getLayout()->addWidget(createItem,0,Qt::AlignHCenter);
+    form->getLayout()->addLayout(buttonsLayout);
 
     connect(createItem, &QPushButton::clicked, [=] {
         if (titleField->text().isEmpty() || pagesField->text().isEmpty() || authorField->text().isEmpty()) {
-            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione, devono essere obbligatoriamente compilati.");
+            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione e l'immagine, sono obbligatori");
             return;
         }
-        Book* newBook = new Book(titleField->text().trimmed().toStdString(),authorField->text().toStdString(),genreComboBox->currentText().toStdString(),pagesField->text().toInt(),yearSpinBox->value(),descriptionField->toPlainText().toStdString());
+        QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+        QString copiedPath = ImageHandler::copyImageToDestination(image_path, destFolder);
+        if (!copiedPath.isEmpty()) {
+            addImgButton->setText("Aggiungi Immagine");
+        }
+        Book* newBook = new Book(titleField->text().trimmed().toStdString(),authorField->text().toStdString(),genreComboBox->currentText().toStdString(),pagesField->text().toInt(),yearSpinBox->value(),descriptionField->toPlainText().toStdString(), copiedPath.toStdString());
         form->getMainWidget()->getLibrary()->addItem(newBook);
         form->getMainWidget()->getLibrary()->setStatus(false);
         ItemCard* newItem = new ItemCard(titleField->text(),":/assets/imgBook.png",newBook, form->getMainWidget());
@@ -120,4 +142,5 @@ void BookForm::clearFields() {
     authorField->clear();
     pagesField->clear();
     descriptionField->clear();
+    image_path = "";
 }

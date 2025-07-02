@@ -23,7 +23,7 @@ private:
     QSpinBox* secondsSpinBox;
     QComboBox* genreComboBox;
     QTextEdit* descriptionField;
-
+    QString image_path;
 public:
     explicit FilmForm(QWidget* parent = nullptr);
     void clearFields() override;

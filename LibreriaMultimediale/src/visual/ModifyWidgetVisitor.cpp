@@ -11,6 +11,8 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTextEdit>
+#include "ImageHandler.h"
+#include <QFile>
 
 #include "../logic/Book.h"
 #include "../logic/Film.h"
@@ -29,10 +31,33 @@ void ModifyWidgetVisitor::visit(Book *libro) {
     QWidget* imageWidget = new QWidget(modify);
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
+    
+    QString* imagePath = new QString(QString::fromStdString(libro->getImagePath()));
+    if (imagePath->isEmpty()) {
+	*imagePath = ":/assets/imgBookBig.png";
+    }
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgBookBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap bookImage;
+    bookImage.load(*imagePath);
+    image->setPixmap(bookImage);
+    
+    QPushButton* chooseImage = new QPushButton("Scegli Immagine");
+    chooseImage->setObjectName("addImagesButton");
+    chooseImage->setCursor(Qt::PointingHandCursor);
     imageLayout->addWidget(image);
+    imageLayout->addWidget(chooseImage);
+    
+    ImageHandler* imagehand = new ImageHandler();
+    connect(chooseImage, &QPushButton::clicked, this, [this, imagehand, image, imagePath]() {
+	QString newPath = imagehand->addImage();
+	   if (!newPath.isEmpty()) {
+	         *imagePath = newPath;
+		 QPixmap newPixmap;
+		 newPixmap.load(*imagePath);
+		 QPixmap scaledPixmap = newPixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		 image->setPixmap(scaledPixmap);
+	   }
+    });
 
     QWidget* rightWidget = new QWidget(modify);
     rightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -154,6 +179,14 @@ void ModifyWidgetVisitor::visit(Book *libro) {
             libro->setPages(pagesField->text().toUInt());
             libro->setDescription(descriptionField->toPlainText().toStdString());
             libro->setYear(yearSpinBox->value());
+            if (!imagePath->isEmpty() && libro->getImagePath() != imagePath->toStdString()) {
+                if (libro->getImagePath() != "" && !QFile::remove(QString::fromStdString(libro->getImagePath()))) {
+                    qDebug() << "Errore durante l'eliminazione del file";
+                }
+                QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+                QString copiedPath = ImageHandler::copyImageToDestination(*imagePath, destFolder);
+                libro->setImagePath(copiedPath.toStdString());
+            }
             libro->setStatus(false);
             emit saveChanges(libro->getId(), titleField->text());
             emit closeModifyWidget();
@@ -176,10 +209,32 @@ void ModifyWidgetVisitor::visit(Music* music) {
     QWidget* imageWidget = new QWidget(modify);
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
+    QString* imagePath = new QString(QString::fromStdString(music->getImagePath()));
+    if (imagePath->isEmpty()) {
+	*imagePath = ":/assets/imgMusicBig.png";
+    }
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgMusicBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap musicImage;
+    musicImage.load(*imagePath);
+    image->setPixmap(musicImage);
+    
+    QPushButton* chooseImage = new QPushButton("Scegli Immagine");
+    chooseImage->setObjectName("addImagesButton");
+    chooseImage->setCursor(Qt::PointingHandCursor);
     imageLayout->addWidget(image);
+    imageLayout->addWidget(chooseImage);
+    
+    ImageHandler* imagehand = new ImageHandler();
+    connect(chooseImage, &QPushButton::clicked, this, [this, imagehand, image, imagePath]() {
+	QString newPath = imagehand->addImage();
+	   if (!newPath.isEmpty()) {
+	         *imagePath = newPath;
+		 QPixmap newPixmap;
+		 newPixmap.load(*imagePath);
+		 QPixmap scaledPixmap = newPixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		 image->setPixmap(scaledPixmap);
+	   }
+    });
 
     QWidget* rightWidget = new QWidget(modify);
     rightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -292,6 +347,14 @@ void ModifyWidgetVisitor::visit(Music* music) {
             music->setSinger(singerField->text().toStdString());
             music->setDescription(descriptionField->toPlainText().toStdString());
             music->setYear(yearSpinBox->value());
+            if (!imagePath->isEmpty() && music->getImagePath() != imagePath->toStdString()) {
+                if (music->getImagePath() != "" && !QFile::remove(QString::fromStdString(music->getImagePath()))) {
+                    qDebug() << "Errore durante l'eliminazione del file";
+                }
+                QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+                QString copiedPath = ImageHandler::copyImageToDestination(*imagePath, destFolder);
+                music->setImagePath(copiedPath.toStdString());
+            }
             music->setStatus(false);
             emit saveChanges(music->getId(), titleField->text());
             emit closeModifyWidget();
@@ -314,10 +377,32 @@ void ModifyWidgetVisitor::visit(Film *film) {
     QWidget* imageWidget = new QWidget(modify);
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
+    QString* imagePath = new QString(QString::fromStdString(film->getImagePath()));
+    if (imagePath->isEmpty()) {
+	*imagePath = ":/assets/imgFilmBig.png";
+    }
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgFilmBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap filmImage;
+    filmImage.load(*imagePath);
+    image->setPixmap(filmImage);
+    
+    QPushButton* chooseImage = new QPushButton("Scegli Immagine");
+    chooseImage->setObjectName("addImagesButton");
+    chooseImage->setCursor(Qt::PointingHandCursor);
     imageLayout->addWidget(image);
+    imageLayout->addWidget(chooseImage);
+    
+    ImageHandler* imagehand = new ImageHandler();
+    connect(chooseImage, &QPushButton::clicked, this, [this, imagehand, image, imagePath]() {
+	QString newPath = imagehand->addImage();
+	   if (!newPath.isEmpty()) {
+	         *imagePath = newPath;
+		 QPixmap newPixmap;
+		 newPixmap.load(*imagePath);
+		 QPixmap scaledPixmap = newPixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		 image->setPixmap(scaledPixmap);
+	   }
+    });
 
     QWidget* rightWidget = new QWidget(modify);
     rightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -432,6 +517,14 @@ void ModifyWidgetVisitor::visit(Film *film) {
             film->setTime((secondsSpinBox->value() + minutesSpinBox->value() * 60 + hoursSpinBox->value() * 3600)%86400);
             film->setDescription(descriptionField->toPlainText().toStdString());
             film->setYear(yearSpinBox->value());
+            if (!imagePath->isEmpty() && film->getImagePath() != imagePath->toStdString()) {
+                if (film->getImagePath() != "" && !QFile::remove(QString::fromStdString(film->getImagePath()))) {
+                    qDebug() << "Errore durante l'eliminazione del file";
+                }
+                QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+                QString copiedPath = ImageHandler::copyImageToDestination(*imagePath, destFolder);
+                film->setImagePath(copiedPath.toStdString());
+            }
             film->setStatus(false);
             emit saveChanges(film->getId(), titleField->text());
             emit closeModifyWidget();

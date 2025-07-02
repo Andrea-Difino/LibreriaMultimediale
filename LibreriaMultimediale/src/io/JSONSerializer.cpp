@@ -20,6 +20,8 @@ QJsonObject JSONSerializer::serialize(Book* libro) {
     libroJson["pages"] = static_cast<int>(libro->getPages());
     libroJson["year"] = static_cast<int>(libro->getYear());
     libroJson["description"] = QString::fromStdString(libro->getDescription());
+    libroJson["image_path"] = QString::fromStdString(libro->getImagePath());
+    libroJson["liked"] = libro->isLiked();
     return libroJson;
 }
 
@@ -33,6 +35,8 @@ QJsonObject JSONSerializer::serialize(Music* music) {
     musicaJson["durata"] = static_cast<int>(music->getTime());
     musicaJson["year"] = static_cast<int>(music->getYear());
     musicaJson["description"] = QString::fromStdString(music->getDescription());
+    musicaJson["image_path"] = QString::fromStdString(music->getImagePath());
+    musicaJson["liked"] = music->isLiked();
     return musicaJson;
 }
 
@@ -46,25 +50,30 @@ QJsonObject JSONSerializer::serialize(Film* film) {
     filmJson["durata"] = static_cast<int>(film->getTime());
     filmJson["year"] = static_cast<int>(film->getYear());
     filmJson["description"] = QString::fromStdString(film->getDescription());
+    filmJson["image_path"] = QString::fromStdString(film->getImagePath());
+    filmJson["liked"] = film->isLiked();
     return filmJson;
 }
 
 Item* JSONSerializer::deserialize(const QJsonObject& obj) {
     if (obj["type"].toString() == "Book") {
-        Book* book = new Book(obj["title"].toString().toStdString(), obj["author"].toString().toStdString(), obj["genre"].toString().toStdString(), obj["pages"].toInt(), obj["year"].toInt(), obj["description"].toString().toStdString());
+        Book* book = new Book(obj["title"].toString().toStdString(), obj["author"].toString().toStdString(), obj["genre"].toString().toStdString(), obj["pages"].toInt(), obj["year"].toInt(), obj["description"].toString().toStdString(), obj["image_path"].toString().toStdString());
         book->setId(obj["id"].toInt());
+        book->setLiked(obj["liked"].toBool());
         Item::setIdCount(book->getId()+1);
         return book;
     }
     if (obj["type"].toString() == "Music") {
-        Music* music = new Music(obj["title"].toString().toStdString(), obj["description"].toString().toStdString(), obj["singer"].toString().toStdString(), obj["year"].toInt(), obj["durata"].toInt());
+        Music* music = new Music(obj["title"].toString().toStdString(), obj["description"].toString().toStdString(), obj["singer"].toString().toStdString(), obj["year"].toInt(), obj["durata"].toInt(), obj["image_path"].toString().toStdString());
         music->setId(obj["id"].toInt());
+        music->setLiked(obj["liked"].toBool());
         Item::setIdCount(music->getId()+1);
         return music;
     }
     if (obj["type"].toString() == "Film") {
-        Film* film = new Film(obj["title"].toString().toStdString(), obj["description"].toString().toStdString(), obj["genre"].toString().toStdString(), obj["year"].toInt(), obj["durata"].toInt());
+        Film* film = new Film(obj["title"].toString().toStdString(), obj["description"].toString().toStdString(), obj["genre"].toString().toStdString(), obj["year"].toInt(), obj["durata"].toInt(), obj["image_path"].toString().toStdString());
         film->setId(obj["id"].toInt());
+        film->setLiked(obj["liked"].toBool());
         Item::setIdCount(film->getId()+1);
         return film;
     }

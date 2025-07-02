@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <iostream>
 
-Film::Film(const std::string& title,const std::string& des,const std::string& g, unsigned int year,unsigned int time) : Item(title, year, des), genre(g), time(time) {}
+Film::Film(const std::string& title,const std::string& des,const std::string& g, unsigned int year,unsigned int time, const std::string& img_path) : Item(title, year, des, img_path), genre(g), time(time) {}
 
 std::string Film::getGenre() const{ return genre;}
 

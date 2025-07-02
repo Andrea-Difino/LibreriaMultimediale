@@ -61,12 +61,12 @@ void JSONVisitor::addJSONItemsToFile() {
         if (!value.isObject()) continue;
 
         QJsonObject obj = value.toObject();
-        QString imagePath = (obj["type"].toString() == "Book") ? ":/assets/imgBook.png" :
+        QString general_imgPath = (obj["type"].toString() == "Book") ? ":/assets/imgBook.png" :
                            (obj["type"].toString() == "Music") ? ":/assets/imgMusic.png" :
                            ":/assets/imgFilm.png";
 
         Item* item = JSONSerializer::deserialize(obj);
-        ItemCard* widget = new ItemCard(obj["title"].toString(),imagePath,item, dynamic_cast<MainWidget*>(mainObserver));
+        ItemCard* widget = new ItemCard(obj["title"].toString(),general_imgPath,item, dynamic_cast<MainWidget*>(mainObserver));
         item->setStatus(true);
         library->addItem(item);
         notifyAdd(widget);

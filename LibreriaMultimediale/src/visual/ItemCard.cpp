@@ -8,6 +8,9 @@
 #include "../logic/Book.h"
 #include "MainWidget.h"
 #include "OverviewWidgetVisitor.h"
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
+#include <QGraphicsOpacityEffect>
 
 
 ItemCard::ItemCard(const QString &title, const QString &imagePath, Item *linked_obj, QWidget *parent) : QFrame(parent), item(linked_obj){
@@ -25,12 +28,30 @@ ItemCard::ItemCard(const QString &title, const QString &imagePath, Item *linked_
     mainLayout->addWidget(titleLabel,0,Qt::AlignHCenter);
 
 
-    imageLabel = new QLabel();
+    imageLabel = new QLabel(this);
     QPixmap itemImage(imagePath);
     imageLabel->setPixmap(itemImage.scaled(85, 85, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
     imageLabel->setAlignment(Qt::AlignCenter);
     imageLabel->setMargin(8);
+    imageLabel->lower();
+    
+    favoriteIcon = new QLabel(this);    
+    favoriteIcon->setPixmap(QPixmap(":/assets/star.png").scaled(favoriteIcon->width()-5, favoriteIcon->height()-5, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    favoriteIcon->resize(30, 30);
+    favoriteIcon->setStyleSheet(
+	    "QLabel { "
+	    "background-color: white; "
+	    "border-radius: 15px; "
+	    "border: 2px solid #F9DB78; "         
+	    "}"
+    );
+    int x = ((width() - favoriteIcon->width()) / 2)+30;
+    int y = 55;
+    favoriteIcon->move(x, y);
+    favoriteIcon->setAlignment(Qt::AlignCenter);
+    favoriteIcon->raise();
+    favoriteIcon->hide(); 
+    
     mainLayout->addWidget(imageLabel);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -77,6 +98,7 @@ ItemCard::ItemCard(const QString &title, const QString &imagePath, Item *linked_
     mainLayout->addLayout(buttonLayout);
 
     setLayout(mainLayout);
+    updateFavoriteIcon();
 }
 
 Item * ItemCard::getItem() const{
@@ -85,4 +107,69 @@ Item * ItemCard::getItem() const{
 
 void ItemCard::setTitleLabel(QString title) {
     titleLabel->setText(title);
+}
+
+void ItemCard::mouseDoubleClickEvent(QMouseEvent *event) {
+    if (item) {
+        item->setLiked(!item->isLiked());
+        updateFavoriteIcon();
+        item->setStatus(false);
+        emit userDoubleClicked(item->getId());
+    }
+    QFrame::mouseDoubleClickEvent(event);
+}
+
+void ItemCard::updateFavoriteIcon() {
+    if (item && item->isLiked()) {
+        animateFavoriteIcon(true);
+    } else {
+        animateFavoriteIcon(false);
+    }
+}
+
+
+void ItemCard::animateFavoriteIcon(bool show) {
+    if (!favoriteIcon->graphicsEffect()) {
+        auto* opacityEffect = new QGraphicsOpacityEffect(favoriteIcon);
+        favoriteIcon->setGraphicsEffect(opacityEffect);
+    }
+    auto* effect = static_cast<QGraphicsOpacityEffect*>(favoriteIcon->graphicsEffect());
+
+    const int iconWidth = 30;
+
+    const int endX = ((width() - iconWidth) / 2) + 30;
+    const int endY = 55;
+    const QPoint targetPos(endX, endY);
+
+    const QPoint startPos = show ? targetPos + QPoint(0, 10) : targetPos;
+    const QPoint exitPos = targetPos + QPoint(0, 10);
+
+    if (show) {
+        favoriteIcon->move(startPos);
+        favoriteIcon->setVisible(true);
+    }
+
+    QPropertyAnimation* moveAnim = new QPropertyAnimation(favoriteIcon, "pos");
+    moveAnim->setDuration(300);
+    moveAnim->setEasingCurve(QEasingCurve::OutCubic);
+    moveAnim->setStartValue(show ? startPos : targetPos);
+    moveAnim->setEndValue(show ? targetPos : exitPos);
+
+    QPropertyAnimation* opacityAnim = new QPropertyAnimation(effect, "opacity");
+    opacityAnim->setDuration(300);
+    opacityAnim->setEasingCurve(QEasingCurve::OutCubic);
+    opacityAnim->setStartValue(show ? 0.0 : 1.0);
+    opacityAnim->setEndValue(show ? 1.0 : 0.0);
+
+    QParallelAnimationGroup* group = new QParallelAnimationGroup(this);
+    group->addAnimation(moveAnim);
+    group->addAnimation(opacityAnim);
+
+    if (!show) {
+        connect(group, &QParallelAnimationGroup::finished, [this]() {
+            favoriteIcon->setVisible(false);
+        });
+    }
+
+    group->start(QAbstractAnimation::DeleteWhenStopped);
 }

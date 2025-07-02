@@ -3,6 +3,9 @@
 //
 
 #include "MusicForm.h"
+
+#include <qdir.h>
+#include "ImageHandler.h"
 #include "FormWidget.h"
 #include <QLabel>
 #include <QMessageBox>
@@ -26,7 +29,7 @@ MusicForm::MusicForm(QWidget* parent) : FormWidget(parent) {
     year->setFixedWidth(120);
     year->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     year->setMargin(10);
-    yearSpinBox->setRange(1300, QDate::currentDate().year());  // Imposta l'intervallo di anni selezionabili
+    yearSpinBox->setRange(1300, QDate::currentDate().year());
     yearSpinBox->setValue(QDate::currentDate().year());
     yearLayout->addWidget(year);
     yearLayout->addWidget(yearSpinBox);
@@ -77,28 +80,48 @@ MusicForm::MusicForm(QWidget* parent) : FormWidget(parent) {
     descriptionLayout->addWidget(description);
     descriptionLayout->addWidget(descriptionField);
 
+    addImgButton = new QPushButton("Aggiungi Immagine", this);
+    addImgButton->setCursor(Qt::PointingHandCursor);
+    addImgButton->setObjectName("addImagesButton");
+
+    ImageHandler* imageHand = new ImageHandler(this);
+    connect(addImgButton, &QPushButton::clicked, this, [this, imageHand] () {
+        image_path = imageHand->addImage();
+        addImgButton->setText("Immagine Selezionata!");
+    });
+
     createItem = new QPushButton("Crea Media", this);
     createItem->setObjectName("confirmSelection");
     createItem->setCursor(Qt::PointingHandCursor);
+
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(addImgButton);
+    buttonsLayout->addWidget(createItem);
+    buttonsLayout->setAlignment(Qt::AlignHCenter);
 
     form->getLayout()->addLayout(titleLayout);
     form->getLayout()->addLayout(yearLayout);
     form->getLayout()->addLayout(singerLayout);
     form->getLayout()->addLayout(timeLayout);
     form->getLayout()->addLayout(descriptionLayout);
-    form->getLayout()->addWidget(createItem,0,Qt::AlignHCenter);
+    form->getLayout()->addLayout(buttonsLayout);
 
     connect(createItem, &QPushButton::clicked, [=] {
         if (titleField->text().isEmpty() || singerField->text().isEmpty()) {
-            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione, devono essere obbligatoriamente compilati.");
+            QMessageBox::warning(this, "Errore", "Tutti i campi, eccetto la descrizione e l'immagine, sono obbligatori.");
             return;
         }
         if (secondsSpinBox->value() == 0 && minutesSpinBox->value() == 0 && hoursSpinBox->value() == 0) {
             QMessageBox::warning(this, "Errore", "La durata deve essere maggiore di zero");
             return;
         }
-
-        Music* newMusic = new Music(titleField->text().trimmed().toStdString(),descriptionField->toPlainText().toStdString(),singerField->text().toStdString(),yearSpinBox->value(),(secondsSpinBox->value() + minutesSpinBox->value() * 60 + hoursSpinBox->value() * 3600)%86400);
+        QString destFolder = QCoreApplication::applicationDirPath() + "/itemsCover";
+        QString copiedPath = ImageHandler::copyImageToDestination(image_path, destFolder);
+        if (!copiedPath.isEmpty()) {
+            //qDebug() << "Immagine copiata in:" << copiedPath;
+            addImgButton->setText("Aggiungi Immagine");
+        }
+        Music* newMusic = new Music(titleField->text().trimmed().toStdString(),descriptionField->toPlainText().toStdString(),singerField->text().toStdString(),yearSpinBox->value(),(secondsSpinBox->value() + minutesSpinBox->value() * 60 + hoursSpinBox->value() * 3600)%86400, copiedPath.toStdString());
         form->getMainWidget()->getLibrary()->addItem(newMusic);
         form->getMainWidget()->getLibrary()->setStatus(false);
         ItemCard* newItem = new ItemCard(titleField->text(),":/assets/imgMusic.png", newMusic,form->getMainWidget());
@@ -117,4 +140,5 @@ void MusicForm::clearFields() {
     minutesSpinBox->setValue(0);
     secondsSpinBox->setValue(0);
     descriptionField->clear();
+    image_path = "";
 }

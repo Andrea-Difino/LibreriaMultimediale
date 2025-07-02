@@ -10,7 +10,7 @@
 
 class Music : public Item {
 public:
-    Music(const std::string &tit,const std::string &des,const std::string &sing,unsigned int y,unsigned int time);
+    Music(const std::string &tit,const std::string &des,const std::string &sing,unsigned int y,unsigned int time, const std::string& img_path);
     ~Music() override;
 
     void setSinger(std::string sing);

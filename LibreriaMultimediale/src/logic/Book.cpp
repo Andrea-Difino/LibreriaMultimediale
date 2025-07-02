@@ -8,7 +8,7 @@
 #include <ostream>
 
 Book::Book(const std::string &tit, const std::string &author, const std::string &gen, unsigned int p,
-             unsigned int y, const std::string &des) : Item(tit, y, des), author(author), pages(p), genre(gen){}
+             unsigned int y, const std::string &des, const std::string& img_path) : Item(tit, y, des, img_path), author(author), pages(p), genre(gen){}
 
 std::string Book::getAuthor() const { return author; }
 

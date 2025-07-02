@@ -22,7 +22,7 @@ private:
     QLineEdit* pagesField;
     QComboBox *genreComboBox;
     QTextEdit *descriptionField;
-
+    QString image_path;
 public:
     explicit BookForm(QWidget* parent = nullptr);
     void clearFields() override;

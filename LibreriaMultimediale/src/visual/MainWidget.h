@@ -13,6 +13,7 @@
 #include "../logic/Library.h"
 #include "Form.h"
 #include <QVBoxLayout>
+#include <QCheckBox>
 #include "OverviewWidgetVisitor.h"
 #include <QScrollArea>
 #include "../logic/ObserverInterface.h"
@@ -58,7 +59,7 @@ class MainWidget: public QWidget, public ObserverInterface {
         Library* library;
         std::vector<ItemCard*> item_cards_;
         void addSpecialWidgetToPage(QWidget *widget, QWidget *page, int pageIndex);
-        void filterItemsByType(QPushButton* first, QPushButton* second, QPushButton* third);
+        void filterItems(QComboBox* typeCombo, QCheckBox* favCheckbox);
     protected:
         void closeEvent(QCloseEvent *event) override;
     public slots:
@@ -74,6 +75,9 @@ class MainWidget: public QWidget, public ObserverInterface {
         void addOverviewToLookAtPage(QWidget* widget);
         void addModifyToModifyPage(QWidget* widget);
         void changeItemCard(unsigned int id, QString title);
+        void handleItemStatusChange(unsigned int id);
+    signals: 
+    	void itemStatusChanged(unsigned int id);
 };
 
 

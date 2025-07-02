@@ -12,14 +12,15 @@ class Form;
 class FormWidget : public QWidget {
     Q_OBJECT
 
-protected:
-    Form* form;
-    QPushButton* createItem;
-public:
-    explicit FormWidget(QWidget* parent = nullptr);
-    virtual ~FormWidget() = default;
+    protected:
+        Form* form;
+        QPushButton* addImgButton;
+        QPushButton* createItem;
+    public:
+        explicit FormWidget(QWidget* parent = nullptr);
+        virtual ~FormWidget() = default;
 
-    virtual void clearFields() = 0;
+    	virtual void clearFields() = 0;
 };
 
 

@@ -11,7 +11,7 @@
 class Book : public Item {
 public:
     explicit Book(const std::string &tit, const std::string &author, const std::string &gen, unsigned int p
-        ,unsigned int y, const std::string &des);
+        ,unsigned int y, const std::string &des, const std::string& img_path);
     ~Book() override = default;
 
     void setAuthor(std::string auth);

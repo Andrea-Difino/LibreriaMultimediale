@@ -23,7 +23,7 @@ private:
     QSpinBox* minutesSpinBox;
     QSpinBox* secondsSpinBox;
     QTextEdit* descriptionField;
-
+    QString image_path;
 public:
     explicit MusicForm(QWidget* parent = nullptr);
     void clearFields() override;

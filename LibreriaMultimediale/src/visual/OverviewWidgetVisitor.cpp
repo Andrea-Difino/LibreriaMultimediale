@@ -29,8 +29,15 @@ void OverviewWidgetVisitor::visit(Book *libro) {
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgBookBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap bookImage;
+
+    if (libro->getImagePath() == "") {
+        bookImage.load(":/assets/imgBookBig.png");
+    } else {
+        bookImage.load(QString::fromStdString(libro->getImagePath()));
+    }
+
+    image->setPixmap(bookImage);
     imageLayout->addWidget(image);
 
     QWidget* rightWidget = new QWidget(overview);
@@ -137,8 +144,14 @@ void OverviewWidgetVisitor::visit(Music* music) {
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgMusicBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap musicImage;
+
+    if (music->getImagePath() == "") {
+        musicImage.load(":/assets/imgMusicBig.png");
+    } else {
+        musicImage.load(QString::fromStdString(music->getImagePath()));
+    }
+    image->setPixmap(musicImage);
     imageLayout->addWidget(image);
 
     QWidget* rightWidget = new QWidget(overview);
@@ -234,8 +247,14 @@ void OverviewWidgetVisitor::visit(Film *film) {
     imageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout* imageLayout = new QVBoxLayout(imageWidget);
     QLabel* image = new QLabel();
-    QPixmap bookImage(":/assets/imgFilmBig.png");
-    image->setPixmap(bookImage.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap filmImage;
+
+    if (film->getImagePath() == "") {
+        filmImage.load(":/assets/imgFilmBig.png");
+    } else {
+        filmImage.load(QString::fromStdString(film->getImagePath()));
+    }
+    image->setPixmap(filmImage);
     imageLayout->addWidget(image);
 
     QWidget* rightWidget = new QWidget(overview);

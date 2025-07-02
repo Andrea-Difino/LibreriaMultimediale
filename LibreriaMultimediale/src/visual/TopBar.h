@@ -20,7 +20,7 @@ public:
     TopBar(QWidget *parent = nullptr);
 
     QPushButton* getChangePageBtn() const;
-    QWidget* getSearchWidget() const;
+    SearchWidget* getSearchWidget() const;
     QPushButton* getSaveFile() const;
     QPushButton* getUploadFile() const;
     QPushButton *getCreateFile() const;

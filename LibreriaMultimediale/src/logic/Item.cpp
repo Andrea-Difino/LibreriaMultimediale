@@ -6,7 +6,7 @@
 
 unsigned int Item::idCount = 0;
 
-Item::Item(const std::string& t, unsigned int y,const std::string& des = ""): title(t), description(des.empty() ? "Nessuna Descrizione" : des), year(y) {
+Item::Item(const std::string& t, unsigned int y,const std::string& des = "", const std::string& img_path = ""): title(t), description(des.empty() ? "Nessuna Descrizione" : des), year(y), image_path(img_path){
     id = idCount++;
 }
 
@@ -28,10 +28,18 @@ unsigned int Item::getIdCount() {return idCount;}
 
 void Item::setIdCount(unsigned int v) {idCount = v;}
 
+void Item::setImagePath(std::string path) { this->image_path = path;}
+
 void Item::setId(unsigned int id) {this->id = id;}
 
 void Item::setStatus(bool status) {isSaved = status;}
 
-bool Item::getStatus() const { return isSaved; }
+bool Item::getStatus() const { return isSaved;}
+
+void Item::setLiked(bool l) {is_liked = l;}
+
+bool Item::isLiked() const {return is_liked;}
+
+std::string Item::getImagePath() const { return image_path;}
 
 

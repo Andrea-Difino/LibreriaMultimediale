@@ -9,7 +9,7 @@
 
 class Film : public Item {
     public:
-        explicit Film(const std::string &title,const std::string& des,const std::string &g, unsigned int year, unsigned int time);
+        explicit Film(const std::string &title,const std::string& des,const std::string &g, unsigned int year, unsigned int time, const std::string& img_path);
         ~Film() override = default;
 
         std::string getGenre() const;

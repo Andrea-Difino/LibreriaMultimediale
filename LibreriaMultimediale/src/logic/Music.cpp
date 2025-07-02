@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-Music::Music(const std::string& tit,const std::string& des,const std::string& sing, unsigned int y, unsigned int t): Item(tit, y, des), singer(sing),
+Music::Music(const std::string& tit,const std::string& des,const std::string& sing, unsigned int y, unsigned int t, const std::string& img_path): Item(tit, y, des, img_path), singer(sing),
     time(t) {
 }
 Music::~Music() {}

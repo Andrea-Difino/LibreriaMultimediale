@@ -17,13 +17,24 @@ class ItemCard : public QFrame{
 
         Item* getItem() const;
         void setTitleLabel(QString title);
+    
+    protected:
+    	void mouseDoubleClickEvent(QMouseEvent *event) override;
+    	
     private:
         QLabel* titleLabel;
         QLabel* imageLabel;
+        QLabel *favoriteIcon;
         QPushButton* lookBtn;
         QPushButton* editBtn;
         QPushButton* deleteBtn;
         Item* item;
+        
+        void updateFavoriteIcon();
+        void animateFavoriteIcon(bool show);
+        
+    signals: 
+    	void userDoubleClicked(unsigned int id);
 };
 
 
